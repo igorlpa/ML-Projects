@@ -1,0 +1,8 @@
+desafio 2:
+	testar
+
+desafio 3:
+	mudar NaN -> 8
+	retirar uma coluna de cada dummy variable
+	usar dados biograficos
+	retirar do y '.' e '*'
