@@ -12,7 +12,7 @@ import json
 import matplotlib.pyplot as plt
 
 fileTrain = pandas.read_csv('train.csv')
-fileTest = pandas.read_csv('test2.csv')
+fileTest = pandas.read_csv('test.csv')
 
 dataTrain = fileTrain[['NU_INSCRICAO', 'NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_REDACAO', 'NU_NOTA_COMP4', 'NU_NOTA_MT']]
 
@@ -83,6 +83,11 @@ dataTest.reset_index(drop=True, inplace=True)
 
 result =  pandas.concat([dataTest['NU_INSCRICAO'], pred_DF], axis=1, ignore_index=True)
 result.columns = ['NU_INSCRICAO', 'NU_NOTA_MT']
+
+
+
+
+
 answers = result.to_dict('records')
 response = {'token':'efb1548e92ce3b7afba62f4d7f594ffd1e743ff7', 'email':'igor@gmail.com', 'answer':answers}
 
