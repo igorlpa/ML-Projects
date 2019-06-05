@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 
 
 
@@ -17,17 +18,25 @@ class Aux:
     embarked_label_encoder = LabelEncoder()
     hot_enconder = OneHotEncoder(handle_unknown='ignore', sparse=False)
     sc_X = StandardScaler()
+    imputer = SimpleImputer(strategy='most_frequent')
 
     def extractFeatures(self, X, isTraining=True):
         features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']
         x = X[features]
     
         # tratamento de NaN
-        x_nan = x.fillna(0)
+        #x_nan = x.fillna(0)
+        if(isTraining):
+            x_nan = pd.DataFrame(self.imputer.fit_transform(x))
+        else:
+            x_nan = pd.DataFrame(self.imputer.transform(x))
+        x_nan.index = x.index
+        x_nan.columns = x.columns 
         
         #add number of memeber families including the one 
         x2 = x_nan.copy()
         x2['family_number'] = x_nan.SibSp + x_nan.Parch + 1
+        x2.drop(['SibSp', 'Parch'], axis=1, inplace=True)
         
         #categorical variables
         label_x = x2.copy()    
@@ -87,7 +96,10 @@ cv.fit(x_train, y_train)
 print(cv.best_params_, cv.best_score_)
 
 
-
+from xgboost import XGBClassifier
+xgb =XGBClassifier()
+xgb.fit(x_train, y_train)
+cv = xgb
 
 
 pred = pd.DataFrame( cv.predict(x_test))
